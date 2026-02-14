@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="ar" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Will You Be My Valentine?</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4e1e1;
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 90vh;
+            margin: 0;
+            /* overflow: hidden; */
+            position: relative;
+            touch-action: manipulation; /* Improve touch interactions */
+        }
+        h1 {
+            font-size: 2em;
+            margin-bottom: 20px;
+            color: #ff69b4;
+            text-align: center;
+        }
+        .buttons {
+            display: flex;
+            gap: 20px;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 1.2em;
+            cursor: pointer;
+            border: none;
+            border-radius: 5px;
+            transition: all 0.3s;
+            touch-action: manipulation; /* Prevent double-tap zoom */
+        }
+        #yesBtn {
+            background-color: #4caf50;
+            color: white;
+        }
+        #noBtn {
+            background-color: #f44336;
+            color: white;
+            position: relative;
+        }
+        .response {
+            display: none;
+            text-align: center;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 1.5em;
+            width: 90%; /* Make it responsive for mobile */
+        }
+        .response p {
+            margin: 10px 0;
+        }
+      .corner-text {
+            display: none;
+            position: absolute;
+            font-size: 0.6em;
+            padding: 10px;
+            color: #555;
+            max-width: 40%; /* Prevent corner texts from causing overflow */
+            word-wrap: break-word;
+        }
+        #upperLeft {
+            top: 10px;
+            left: 10px;
+            font-size: 0.6em;
+        }
+        #upperRight {
+            top: 10px;
+            right: 10px;
+        }
+        #lowerRightBtn {
+            bottom: 10px;
+            right: 10px;
+            display: none;
+            background-color: #ff69b4;
+            color: white;
+            padding: 5px 10px;
+            font-size: 0.8em;
+            border-radius: 5px;
+        }
+        #lowerRightText {
+            bottom: 2px;
+            right: 10px;
+            display: none;
+        }
+        #lowerLeftBtn {
+            bottom: 2px;
+            left: 10px;
+            display: none;
+            background-color: #ff69b4;
+            color: white;
+            padding: 2px 5px; /* Small padding to make it tiny */
+            font-size: 0.5em; /* Very small font */
+            border-radius: 3px;
+            cursor: pointer;
+            position: absolute;
+        }
+
+        /* Media queries for mobile responsiveness */
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 1.5em;
+            }
+            button {
+                padding: 8px 16px;
+                font-size: 1em;
+            }
+            .response {
+                font-size: 1.2em;
+             /*   max-height: 80vh; /* Adjust for mobile keyboards */
+            }
+            .corner-text {
+                font-size: 0.7em;
+                padding: 5px;
+            }
+            #upperLeft {
+                font-size: 0.5em;
+            }
+            #lowerLeftBtn {
+                font-size: 0.4em;
+                padding: 1px 3px;
+                position: absolute;
+                bottom: 2px;
+                left: 3%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>Will you be my valentine?</h1>
+    <div class="buttons">
+        <button id="yesBtn">Yes</button>
+        <button id="noBtn">No</button>
+    </div>
+    
+    <div class="response" id="centerResponse">
+        <p id="initialMsg1">انت صدقتى ولا ايه ابعدى عندى يا وليه</p>
+        <p id="initialMsg2">لا بهزر بهزر بصى فوق على اليمين</p>
+        <p id="extraMessage" style="display: none; direction: rtl;">ايه يا عم شايف فكرنا فى الكلام وعقلنا وكلمنا ماما كمان فاتمنى ذلك و happy valentine معايا يا باشا وتفضل كاتم على نفسى يا عم ودايما مبسوطه معايا</p>
+    </div>
+    
+    <div class="corner-text" id="upperRight">لا قصدى بصى فوق على الشمال</div>
+    <div class="corner-text" id="upperLeft">لا انا كنت اقصد تحت على الشمال</div>
+    <button id="lowerRightBtn">اضغط هنا</button>
+    <div class="corner-text" id="lowerRightText">مش قولتلك تحت على الشمال انت مش بتسمع الكلام ليه يا ولا و دوس على الزرار البنفسجى</div>
+    <button id="lowerLeftBtn"></button>
+
+    <script>
+        const noBtn = document.getElementById('noBtn');
+        const yesBtn = document.getElementById('yesBtn');
+        const centerResponse = document.getElementById('centerResponse');
+        const upperLeft = document.getElementById('upperLeft');
+        const upperRight = document.getElementById('upperRight');
+        const lowerRightBtn = document.getElementById('lowerRightBtn');
+        const lowerRightText = document.getElementById('lowerRightText');
+        const lowerLeftBtn = document.getElementById('lowerLeftBtn');
+        const initialMsg1 = document.getElementById('initialMsg1');
+        const initialMsg2 = document.getElementById('initialMsg2');
+        const extraMessage = document.getElementById('extraMessage');
+
+        function moveNoBtn() {
+            const x = Math.random() * (window.innerWidth - noBtn.offsetWidth);
+            const y = Math.random() * (window.innerHeight - noBtn.offsetHeight);
+            noBtn.style.position = 'absolute';
+            noBtn.style.left = `${x}px`;
+            noBtn.style.top = `${y}px`;
+        }
+
+        noBtn.addEventListener('mouseover', moveNoBtn);
+        noBtn.addEventListener('touchstart', moveNoBtn); // Add touch support for mobile
+
+        yesBtn.addEventListener('click', () => {
+            document.querySelector('h1').style.display = 'none';
+            document.querySelector('.buttons').style.display = 'none';
+            centerResponse.style.display = 'block';
+            upperLeft.style.display = 'block';
+            lowerRightText.style.display = 'block';
+            upperRight.style.display = 'block';
+            lowerRightBtn.style.display = 'none';
+            lowerLeftBtn.style.display = 'block';
+        });
+
+        lowerRightBtn.addEventListener('click', () => {
+            lowerRightBtn.style.display = 'none';
+            lowerRightText.style.display = 'block';
+        });
+
+        lowerLeftBtn.addEventListener('click', () => {
+            initialMsg1.style.display = 'none';
+            initialMsg2.style.display = 'none';
+            upperLeft.style.display = 'none';
+            upperRight.style.display = 'none';
+            lowerRightBtn.style.display = 'none';
+            lowerRightText.style.display = 'none';
+            extraMessage.style.display = 'block';
+            lowerLeftBtn.style.display = 'none';
+        });
+    </script>
+</body>
+</html>
